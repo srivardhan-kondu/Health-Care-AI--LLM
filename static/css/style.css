@@ -1,0 +1,721 @@
+/* =========================================================
+   Accident Severity & Hospital Recommendation System
+   Pleasant & Calm Light Theme
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap');
+
+/* ── CSS Variables ──────────────────────────────────────── */
+:root {
+  --bg-main:        #f5f0eb;
+  --bg-warm:        #faf7f4;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #fefefe;
+  --border:         rgba(180, 165, 150, 0.25);
+  --border-glow:    rgba(120, 160, 140, 0.35);
+
+  --accent-sage:    #7aab8e;
+  --accent-teal:    #5a9e9e;
+  --accent-lavender:#9b8ec4;
+  --accent-rose:    #d4838a;
+  --accent-amber:   #d4a96a;
+  --accent-green:   #6aab7b;
+
+  --text-primary:   #3a3632;
+  --text-secondary: #6b6560;
+  --text-muted:     #9a928b;
+
+  --gradient-hero: linear-gradient(135deg, #f5f0eb 0%, #ede7e0 50%, #f0ebe5 100%);
+  --gradient-card: linear-gradient(145deg, #ffffff, #faf7f4);
+  --gradient-btn:  linear-gradient(135deg, #7aab8e, #5a9e9e);
+  --gradient-severe:   linear-gradient(135deg, #d4838a, #b8636b);
+  --gradient-moderate: linear-gradient(135deg, #d4a96a, #c09050);
+  --gradient-minor:    linear-gradient(135deg, #7aab8e, #5a9a7a);
+
+  --shadow-card: 0 2px 16px rgba(120, 100, 80, 0.06), 0 1px 3px rgba(120, 100, 80, 0.08);
+  --shadow-glow: 0 4px 24px rgba(120, 160, 140, 0.12);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── Soft Background ────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background:
+    radial-gradient(ellipse 700px 500px at 15% 25%, rgba(122, 171, 142, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 85% 75%, rgba(155, 142, 196, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 400px at 50% 10%, rgba(212, 169, 106, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: bgPulse 15s ease-in-out infinite alternate;
+}
+
+@keyframes bgPulse {
+  0%   { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 1;   transform: scale(1.03); }
+}
+
+/* ── Navbar ─────────────────────────────────────────────── */
+.navbar {
+  background: rgba(250, 247, 244, 0.88) !important;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0.9rem 0;
+}
+
+.navbar-brand {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--accent-sage) !important;
+  -webkit-text-fill-color: var(--accent-sage);
+}
+
+.nav-badge {
+  background: rgba(122, 171, 142, 0.12);
+  border: 1px solid rgba(122, 171, 142, 0.25);
+  color: var(--accent-sage);
+  font-size: 0.7rem;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ── Hero Section ───────────────────────────────────────── */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 0 3rem;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(122, 171, 142, 0.1);
+  border: 1px solid rgba(122, 171, 142, 0.25);
+  border-radius: 30px;
+  padding: 6px 18px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-sage);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.hero h1 span {
+  background: var(--gradient-btn);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  max-width: 580px;
+  margin: 0 auto 2rem;
+}
+
+/* ── Glass Card ─────────────────────────────────────────── */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  position: relative;
+  z-index: 1;
+}
+
+.glass-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}
+
+/* ── Upload Zone ────────────────────────────────────────── */
+.upload-section {
+  padding: 2.5rem;
+}
+
+.upload-zone {
+  border: 2px dashed rgba(122, 171, 142, 0.35);
+  border-radius: var(--radius);
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  background: rgba(122, 171, 142, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(122, 171, 142, 0.06) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: var(--accent-sage);
+  background: rgba(122, 171, 142, 0.06);
+}
+
+.upload-zone:hover::before,
+.upload-zone.drag-over::before {
+  opacity: 1;
+}
+
+.upload-zone.has-image {
+  border-style: solid;
+  border-color: rgba(122, 171, 142, 0.45);
+  padding: 1rem;
+}
+
+.upload-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 1.2rem;
+  background: rgba(122, 171, 142, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  transition: transform var(--transition);
+}
+
+.upload-zone:hover .upload-icon {
+  transform: scale(1.1);
+}
+
+.upload-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text-primary);
+}
+
+.upload-subtitle {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.format-badges {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.badge-format {
+  background: rgba(122, 171, 142, 0.08);
+  border: 1px solid rgba(122, 171, 142, 0.2);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+/* Image Preview */
+#imagePreview {
+  max-width: 100%;
+  max-height: 320px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 4px 16px rgba(100, 80, 60, 0.1);
+}
+
+/* ── Analyze Button ─────────────────────────────────────── */
+.btn-analyze {
+  background: var(--gradient-btn);
+  border: none;
+  border-radius: 50px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.85rem 2.5rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 4px 16px rgba(122, 171, 142, 0.25);
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-analyze:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(122, 171, 142, 0.35);
+}
+
+.btn-analyze:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-analyze:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Location Badge ─────────────────────────────────────── */
+.location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  padding: 5px 14px;
+  background: rgba(0,0,0,0.02);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+.location-badge.has-location {
+  color: var(--accent-green);
+  border-color: rgba(106, 171, 123, 0.35);
+  background: rgba(106, 171, 123, 0.08);
+}
+
+.location-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.location-badge.has-location .location-dot {
+  background: var(--accent-green);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.8); }
+}
+
+/* ── Loading Overlay ────────────────────────────────────── */
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(245, 240, 235, 0.92);
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+#loadingOverlay.active {
+  display: flex;
+}
+
+.spinner-ring {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(122, 171, 142, 0.2);
+  border-top-color: var(--accent-sage);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.loading-step {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ── Results Section ────────────────────────────────────── */
+#resultsSection {
+  display: none;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+#resultsSection.visible {
+  display: block;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Section Labels */
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+/* ── Demo Mode Banner ───────────────────────────────────── */
+.demo-banner {
+  background: rgba(212, 169, 106, 0.1);
+  border: 1px solid rgba(212, 169, 106, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 1rem;
+  color: #b08840;
+  font-size: 0.82rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Injury Analysis Card ───────────────────────────────── */
+.injury-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.severity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.severity-badge.Severe {
+  background: var(--gradient-severe);
+  color: white;
+  box-shadow: 0 3px 12px rgba(212, 131, 138, 0.25);
+}
+
+.severity-badge.Moderate {
+  background: var(--gradient-moderate);
+  color: white;
+  box-shadow: 0 3px 12px rgba(212, 169, 106, 0.25);
+}
+
+.severity-badge.Minor {
+  background: var(--gradient-minor);
+  color: white;
+  box-shadow: 0 3px 12px rgba(122, 171, 142, 0.25);
+}
+
+/* Confidence Bar */
+.confidence-bar-wrap {
+  margin-top: 1rem;
+}
+
+.confidence-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.confidence-bar {
+  height: 5px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: var(--gradient-btn);
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Injury Items */
+.injury-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0.9rem;
+  background: var(--bg-warm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.6rem;
+  transition: border-color var(--transition);
+}
+
+.injury-item:hover {
+  border-color: var(--border-glow);
+}
+
+.injury-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: rgba(122, 171, 142, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.injury-type-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+
+.injury-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.body-part-tag {
+  font-size: 0.68rem;
+  background: rgba(155, 142, 196, 0.1);
+  border: 1px solid rgba(155, 142, 196, 0.25);
+  color: var(--accent-lavender);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+/* ── Hospital Cards ─────────────────────────────────────── */
+.hospital-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.hospital-card {
+  padding: 1.3rem;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  cursor: default;
+}
+
+.hospital-card:hover {
+  transform: translateY(-3px);
+}
+
+.hospital-rank {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.rank-1 { background: linear-gradient(135deg, #e8c85a, #d4a840); color: #5a4a10; }
+.rank-2 { background: linear-gradient(135deg, #c5bdb5, #a8a098); color: #4a4540; }
+.rank-3 { background: linear-gradient(135deg, #c8a882, #a88a6a); color: #fff; }
+.rank-other { background: rgba(0,0,0,0.04); color: var(--text-secondary); }
+
+.hospital-name {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.hospital-spec {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 4px;
+  margin-bottom: 0.8rem;
+}
+
+.spec-trauma    { background: rgba(212, 131, 138, 0.12); color: #b86068; border: 1px solid rgba(212, 131, 138, 0.25); }
+.spec-ortho     { background: rgba(90, 158, 158, 0.12); color: #4a8a8a; border: 1px solid rgba(90, 158, 158, 0.25); }
+.spec-emergency { background: rgba(212, 169, 106, 0.12); color: #a8842a; border: 1px solid rgba(212, 169, 106, 0.25); }
+.spec-neurology { background: rgba(155, 142, 196, 0.12); color: #7a6aaa; border: 1px solid rgba(155, 142, 196, 0.25); }
+.spec-general   { background: rgba(122, 171, 142, 0.12); color: #5a8a6a; border: 1px solid rgba(122, 171, 142, 0.25); }
+
+.hospital-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.meta-item span { font-size: 1rem; }
+
+.emergency-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 0.7rem;
+}
+
+.emergency-yes {
+  background: rgba(106, 171, 123, 0.1);
+  border: 1px solid rgba(106, 171, 123, 0.3);
+  color: var(--accent-green);
+}
+
+.emergency-no {
+  background: rgba(0,0,0,0.03);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.distance-badge {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-teal);
+}
+
+/* ── Image Result Card ──────────────────────────────────── */
+.result-image-wrap {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.result-image-wrap img {
+  width: 100%;
+  object-fit: cover;
+  max-height: 280px;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.result-image-wrap:hover img {
+  transform: scale(1.02);
+}
+
+/* ── Error Toast ────────────────────────────────────────── */
+#errorToast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 10000;
+  background: rgba(212, 131, 138, 0.1);
+  border: 1px solid rgba(212, 131, 138, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.5rem;
+  color: #b85a62;
+  font-size: 0.9rem;
+  max-width: 380px;
+  display: none;
+  animation: slideInRight 0.35s ease;
+  backdrop-filter: blur(16px);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+/* ── Utility ────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+.text-gradient {
+  background: var(--gradient-btn);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mt-6 { margin-top: 4rem; }
+.mb-6 { margin-bottom: 4rem; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero { padding: 3rem 0 2rem; }
+  .upload-section { padding: 1.5rem; }
+  .hospital-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  background: var(--bg-warm);
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
