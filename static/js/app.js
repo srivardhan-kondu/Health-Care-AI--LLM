@@ -30,9 +30,12 @@
   // ── Init ───────────────────────────────────────────────────
   function init() {
     setupUploadZone();
-    requestLocation();
+    requestLocation(); // Prompt for location immediately on page load
     analyzeBtn.addEventListener("click", handleAnalyze);
   }
+
+  // Call init on DOMContentLoaded to ensure geolocation is requested as soon as the page loads
+  document.addEventListener("DOMContentLoaded", init);
 
   // ── Upload Zone ────────────────────────────────────────────
   function setupUploadZone() {
@@ -118,6 +121,29 @@
   // ── Analyze Flow ───────────────────────────────────────────
   async function handleAnalyze() {
     if (!state.imageFile) return;
+
+    // Always request location before analysis
+    await new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          state.location.lat = pos.coords.latitude;
+          state.location.lng = pos.coords.longitude;
+          state.location.obtained = true;
+          locationBadge.classList.add("has-location");
+          locationText.textContent = `${state.location.lat.toFixed(4)}°, ${state.location.lng.toFixed(4)}°`;
+          resolve();
+        },
+        () => {
+          // Use Hyderabad default if denied
+          state.location.lat = 17.4435;
+          state.location.lng = 78.3772;
+          state.location.obtained = true;
+          setLocationText("📍 Using default location (Hyderabad)");
+          resolve();
+        },
+        { timeout: 8000 }
+      );
+    });
 
     showLoading("Uploading image…");
     hideResults();
@@ -260,10 +286,6 @@
             <div class="meta-item">
               <span>📏</span>
               <span class="distance-badge">${dist}</span>
-            </div>
-            <div class="meta-item">
-              <span>📞</span>
-              <span>${escHtml(h.contact)}</span>
             </div>
           </div>
           <span class="emergency-pill ${h.emergency ? "emergency-yes" : "emergency-no"}">

@@ -24,7 +24,7 @@ def get_hospitals():
     severity = data.get("severity", "Moderate")
 
     if lat is None or lng is None:
-        return jsonify({"error": "lat and lng are required"}), 400
+        return jsonify({"error": "Location required. Please provide your current location to see nearby hospitals."}), 400
 
     try:
         lat = float(lat)
