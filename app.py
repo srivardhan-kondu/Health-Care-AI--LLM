@@ -4,7 +4,7 @@ Accident Severity & Hospital Recommendation System
 """
 
 import os
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request
 
 from config import UPLOAD_FOLDER, MAX_CONTENT_LENGTH
 from routes.analyze import analyze_bp
@@ -20,6 +20,23 @@ def create_app() -> Flask:
     # Register blueprints
     app.register_blueprint(analyze_bp)
     app.register_blueprint(hospitals_bp)
+
+    # ── JSON error handlers (prevent HTML error pages) ────
+    from flask import jsonify as _jsonify
+
+    @app.errorhandler(413)
+    def request_entity_too_large(e):
+        return _jsonify({"error": "File too large. Maximum size is 16 MB."}), 413
+
+    @app.errorhandler(404)
+    def not_found(e):
+        if request.path.startswith(("/analyze", "/hospitals")):
+            return _jsonify({"error": "Endpoint not found."}), 404
+        return render_template("index.html"), 404
+
+    @app.errorhandler(500)
+    def internal_error(e):
+        return _jsonify({"error": "Internal server error. Please try again."}), 500
 
     @app.route("/")
     def index():

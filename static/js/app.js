@@ -182,8 +182,13 @@
     formData.append("image", state.imageFile);
 
     const resp = await fetch("/analyze", { method: "POST", body: formData });
-    const data = await resp.json();
 
+    const contentType = resp.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      throw new Error(`Server error (HTTP ${resp.status}). Please try again.`);
+    }
+
+    const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || `HTTP ${resp.status}`);
     return data;
   }
@@ -194,6 +199,12 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ lat, lng, injury_type: injuryType, severity }),
     });
+
+    const contentType = resp.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      throw new Error(`Server error (HTTP ${resp.status}). Please try again.`);
+    }
+
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || `HTTP ${resp.status}`);
     return data;
