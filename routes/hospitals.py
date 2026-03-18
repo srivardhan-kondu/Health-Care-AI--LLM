@@ -34,6 +34,8 @@ def get_hospitals():
 
     hospitals = fetch_all_hospitals()
     hospitals = add_distances(hospitals, lat, lng)
-    ranked = filter_and_rank(hospitals, injury_type, severity, top_n=6)
+    
+    # User requested all 18 hospitals to be shown regardless of location
+    ranked = filter_and_rank(hospitals, injury_type, severity, top_n=18)
 
     return jsonify({"hospitals": ranked, "count": len(ranked)}), 200

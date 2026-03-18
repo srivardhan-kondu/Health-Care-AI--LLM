@@ -154,22 +154,26 @@
       state.analysisResult = analysisData;
       state.imageFilename  = analysisData.image_filename;
 
-      updateLoadingStep("Finding nearby hospitals…");
-
-      // Step 2 — Get hospitals
-      const hospitalsData = await fetchHospitals(
-        state.location.lat,
-        state.location.lng,
-        analysisData.primary_injury_type,
-        analysisData.severity
-      );
+      // Step 2 — Only fetch hospitals if injuries were detected
+      let hospitals = [];
+      if (analysisData.is_injured) {
+        updateLoadingStep("Finding nearby hospitals…");
+        const hospitalsData = await fetchHospitals(
+          state.location.lat,
+          state.location.lng,
+          analysisData.primary_injury_type,
+          analysisData.severity
+        );
+        hospitals = hospitalsData.hospitals;
+      }
 
       hideLoading();
-      renderResults(analysisData, hospitalsData.hospitals);
+      renderResults(analysisData, hospitals);
 
     } catch (err) {
       hideLoading();
-      showError("Analysis failed: " + (err.message || "Unknown error"));
+      hideResults(); // Ensure hospitals are hidden on error
+      showError("Analysis stopped: " + (err.message || "Unknown error"));
     }
   }
 
@@ -199,7 +203,16 @@
   function renderResults(analysis, hospitals) {
     renderUploadedImage(analysis.image_filename);
     renderInjuryCard(analysis);
-    renderHospitals(hospitals);
+
+    // Hide hospital column if no injuries detected
+    const hospitalCol = document.querySelector("#resultsSection .col-lg-7");
+    if (analysis.is_injured) {
+      hospitalCol.style.display = "";
+      renderHospitals(hospitals);
+    } else {
+      hospitalCol.style.display = "none";
+    }
+
     showResults();
 
     // Scroll to results
@@ -361,5 +374,5 @@
   }
 
   // ── Boot ───────────────────────────────────────────────────
-  document.addEventListener("DOMContentLoaded", init);
+  // Initialization is already bound at the top of the file
 })();

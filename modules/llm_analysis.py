@@ -9,7 +9,8 @@ import re
 import sys
 import os
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from dotenv import load_dotenv
+load_dotenv()
 from config import OPENAI_API_KEY
 
 try:
@@ -33,12 +34,14 @@ Required JSON format:
   ],
   "overall_description": "<one sentence summary of visible injuries>",
   "confidence": <0.0 to 1.0>,
-  "requires_emergency": <true or false>
+  "requires_emergency": <true or false>,
+  "error": "<only include this if the image is explicitly NOT an accident or medical image (e.g. it's a celebrity, landscape, etc). Provide a polite error message in this field, and leave injuries empty. If it IS an accident or injury, DO NOT include this key>"
 }
 
 Rules:
 - Be medically accurate but conservative.
-- If no injuries are visible, return an empty injuries array.
+- If no injuries are visible but the context is an accident scene, return an empty injuries array.
+- If the image is completely unrelated to medical, accidents, or injuries, return an informative string in the "error" key.
 - Do NOT include markdown, code fences, or extra text — only valid JSON.
 """
 
@@ -101,19 +104,22 @@ def analyze_image(image_path: str) -> dict:
         return _validate_result(result)
 
     except json.JSONDecodeError:
-        return {"error": "LLM returned invalid JSON", **_demo_response()}
+        return {"error": "LLM returned invalid JSON. It might not be an accident image.", "injuries": []}
     except Exception as e:
-        return {"error": str(e), **_demo_response()}
+        return {"error": str(e), "injuries": []}
 
 
 def _validate_result(data: dict) -> dict:
     """Ensure all required keys exist."""
-    return {
+    result = {
         "injuries": data.get("injuries", []),
         "overall_description": data.get("overall_description", "Injury analysis complete."),
         "confidence": float(data.get("confidence", 0.75)),
         "requires_emergency": bool(data.get("requires_emergency", False)),
     }
+    if "error" in data:
+        result["error"] = data["error"]
+    return result
 
 
 def _demo_response() -> dict:

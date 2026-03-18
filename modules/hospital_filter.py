@@ -92,19 +92,8 @@ def filter_and_rank(
 
         return (spec_score, emergency_score, distance_score)
 
-    # Filter hospitals within 8–15 km radius
-    filtered = [h for h in hospitals if 8 <= h.get("distance_km", 9999) <= 15]
-    # Sort by score (specialization, emergency, distance)
-    ranked = sorted(filtered, key=score, reverse=True)
-
-    # If not enough hospitals, fallback to closest hospitals within 15 km
-    if len(ranked) < top_n:
-        fallback = [h for h in hospitals if h.get("distance_km", 9999) <= 15]
-        fallback_ranked = sorted(fallback, key=score, reverse=True)
-        ranked = fallback_ranked[:top_n]
-    else:
-        ranked = ranked[:top_n]
-
+    # Show top N hospitals, sorted by score (specialization, emergency, distance)
+    ranked = sorted(hospitals, key=score, reverse=True)[:top_n]
     # Always sort final list by distance_km ascending for user clarity
     ranked = sorted(ranked, key=lambda h: h.get("distance_km", 9999))
     return ranked

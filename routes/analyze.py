@@ -42,8 +42,11 @@ def analyze():
     # LLM analysis
     analysis = analyze_image(save_path)
 
-    if "error" in analysis and not analysis.get("injuries"):
-        return jsonify({"error": analysis["error"]}), 500
+    # 1. Handle critical LLM API errors or Decode errors
+    # 2. Handle LLM explicit "non-accident" image detection
+    if "error" in analysis:
+        # If it explicitly returned an error message inside the JSON or from JSON loads failure
+        return jsonify({"error": analysis["error"]}), 400
 
     # Determine primary injury type (first injury or overall description)
     injuries = analysis.get("injuries", [])
@@ -55,6 +58,8 @@ def analyze():
     # Classify severity
     severity = classify_severity(combined_text or primary_injury_type)
 
+    is_injured = len(injuries) > 0
+
     return jsonify({
         "image_filename": unique_name,
         "injuries": injuries,
@@ -64,4 +69,5 @@ def analyze():
         "confidence": analysis.get("confidence", 0),
         "requires_emergency": analysis.get("requires_emergency", False),
         "demo_mode": analysis.get("_demo", False),
+        "is_injured": is_injured,
     }), 200
