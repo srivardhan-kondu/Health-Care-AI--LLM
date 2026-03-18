@@ -16,7 +16,7 @@ from config import OPENAI_API_KEY
 try:
     from openai import OpenAI
     _client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
-except ImportError:
+except (ImportError, TypeError):
     _client = None
 
 
